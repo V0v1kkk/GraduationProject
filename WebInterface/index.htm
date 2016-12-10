@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Система сбора информации о качестве воздуха</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <style type="text/css">
+  body,td,th {
+	font-family: "trebuchet ms", arial, sans-serif;
+	font-size: 0.8em;
+}
+  </style>
+  <script>
+var xmlHttp=createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xmlHttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	return xmlHttp;
+}
+
+function process()
+{
+	if(xmlHttp.readyState==0 || xmlHttp.readyState==4)
+	{
+		xmlHttp.open('GET','xml',true);
+		xmlHttp.onreadystatechange=handleServerResponse;
+		xmlHttp.send(null);
+	}
+	setTimeout('process()',5000);
+}
+
+function handleServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('uptime');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('Uptime').innerHTML=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTConnectionStatus');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет соединения
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Не установлено";
+		}
+		if(message==1) //Есть соединение
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Установлено";
+		}
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureState');
+		message = xmldoc[0].firstChild.nodeValue;
+		xmldoc1 = xmlResponse.getElementsByTagName('Temperature');
+		message1 = xmldoc1[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('TemperatureTable').bgColor="#FFFFFF";
+		   document.getElementById('TemperatureText').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('TemperatureTable').bgColor="#68CE54";
+		   document.getElementById('TemperatureText').innerHTML=message1 + " &deg;С";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('TemperatureTable').bgColor="#FFBA0E";
+		   document.getElementById('TemperatureText').innerHTML=message1 + " &deg;С";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('TemperatureTable').bgColor="#E43125";
+		   document.getElementById('TemperatureText').innerHTML=message1 + " &deg;С";
+		}
+		///////////////////////////////////////////////////////////////////
+		xmldoc = xmlResponse.getElementsByTagName('HumidityState');
+		message = xmldoc[0].firstChild.nodeValue;
+		xmldoc1 = xmlResponse.getElementsByTagName('Humidity');
+		message1 = xmldoc1[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('HumidityTable').bgColor="#FFFFFF";
+		   document.getElementById('HumidityText').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('HumidityTable').bgColor="#68CE54";
+		   document.getElementById('HumidityText').innerHTML=message1 + " %";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('HumidityTable').bgColor="#FFBA0E";
+		   document.getElementById('HumidityText').innerHTML=message1 + " %";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('HumidityTable').bgColor="#E43125";
+		   document.getElementById('HumidityText').innerHTML=message1 + " %";
+		}
+		///////////////////////////////////////////////////////////////////
+		xmldoc = xmlResponse.getElementsByTagName('CO2State');
+		message = xmldoc[0].firstChild.nodeValue;
+		xmldoc1 = xmlResponse.getElementsByTagName('CO2');
+		message1 = xmldoc1[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('CO2Table').bgColor="#FFFFFF";
+		   document.getElementById('CO2Text').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('CO2Table').bgColor="#68CE54";
+		   document.getElementById('CO2Text').innerHTML=message1 + " ppm";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('CO2Table').bgColor="#FFBA0E";
+		   document.getElementById('CO2Text').innerHTML=message1 + " ppm";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('CO2Table').bgColor="#E43125";
+		   document.getElementById('CO2Text').innerHTML=message1 + " ppm";
+		}
+		///////////////////////////////////////////////////////////////////
+		xmldoc = xmlResponse.getElementsByTagName('COState');
+		message = xmldoc[0].firstChild.nodeValue;
+		xmldoc1 = xmlResponse.getElementsByTagName('CO');
+		message1 = xmldoc1[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('COTable').bgColor="#FFFFFF";
+		   document.getElementById('COText').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('COTable').bgColor="#68CE54";
+		   document.getElementById('COText').innerHTML=message1 + " ppm";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('COTable').bgColor="#FFBA0E";
+		   document.getElementById('COText').innerHTML=message1 + " ppm";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('COTable').bgColor="#E43125";
+		   document.getElementById('COText').innerHTML=message1 + " ppm";
+		}
+		///////////////////////////////////////////////////////////////////
+		xmldoc = xmlResponse.getElementsByTagName('DustState');
+		message = xmldoc[0].firstChild.nodeValue;
+		xmldoc1 = xmlResponse.getElementsByTagName('Dust');
+		message1 = xmldoc1[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('DustTable').bgColor="#FFFFFF";
+		   document.getElementById('DustText').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('DustTable').bgColor="#68CE54";
+		   document.getElementById('DustText').innerHTML=message1 + " мг/м<sup>3</sup>";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('DustTable').bgColor="#FFBA0E";
+		   document.getElementById('DustText').innerHTML=message1 + " мг/м<sup>3</sup>";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('DustTable').bgColor="#E43125";
+		   document.getElementById('DustText').innerHTML=message1 + " мг/м<sup>3</sup>";
+		}   
+		///////////////////////////////////////////////////////////////////
+		xmldoc = xmlResponse.getElementsByTagName('LPGState');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет данных
+		{
+		   document.getElementById('LPGTable').bgColor="#FFFFFF";
+		   document.getElementById('LPGText').innerHTML="-";
+		}
+		else if(message==1) //Нормально
+		{
+		   document.getElementById('LPGTable').bgColor="#68CE54";
+		   document.getElementById('LPGText').innerHTML="Нет";
+		}
+		else if(message==2) //Опасно
+		{
+		   document.getElementById('LPGTable').bgColor="#FFBA0E";
+		   document.getElementById('LPGText').innerHTML="Возможно";
+		}
+		else if(message==3) //Тревога
+		{
+		   document.getElementById('LPGTable').bgColor="#E43125";
+		   document.getElementById('LPGText').innerHTML="Да";
+		}   
+	}
+}
+  </script>
+  
+</head>
+
+<body onload="process();">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <h1><a href="index.htm">AirQuality<span class="logo_colour">Monitoring</span></a></h1>
+          <h2>Система сбора информации о качестве воздуха</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li class="selected"><a href="index.htm">Главная</a></li>
+          <li><a href="nset.htm">Настройки сети</a></li>
+          <li><a href="mqttset.htm">Настройки MQTT</a></li>
+          <li><a href="aset.htm">Настройки оповещений</a></li>
+          <li><a href="about.htm">Служебное</a></li>
+        </ul>
+      </div>
+    </div>
+<div id="site_content">
+  <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Время работы</h3>
+            <p id="Uptime">0:00</p>
+            <h3>Соединение с MQTT</h3>
+            <p id="MQTTStatus"></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+</div>
+      <div id="content">
+        <h1>Текущие показания датчиков</h1>
+        
+        <table width="100%">
+        <tr>
+        <td width="50%">
+        <table id="TemperatureTable" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="TemperatureText" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Температура</div>
+        </td>
+		</tr>
+		</table>  
+        </td>
+        <td width="50%">
+        <table id="HumidityTable" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="HumidityText" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Влажность</div>
+        </td>
+		</tr>
+		</table>  
+        </td>
+        </tr>
+        </table>
+        
+        <table id="CO2Table" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="CO2Text" class="CO2Text" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Углекислый газ (CO<sub>2</sub>)</div>
+        </td>
+		</tr>
+		</table> 
+        
+        <table id="COTable" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="COText" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Угарный газ (CO)</div>
+        </td>
+		</tr>
+		</table> 
+        
+        <table id="DustTable" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="DustText" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Содержание взвешенных частиц в воздухе</div>
+        </td>
+		</tr>
+		</table> 
+        
+        <table id="LPGTable" border=2 width="100%" bgcolor="#FFFFFF">
+ 		<tr>
+	    <td>
+        <div id="LPGText" align="center">-</div>
+        <br>
+        <div class="Labels" align="center">Наличие природного газа в воздухе</div>
+        </td>
+		</tr>
+		</table> 
+        
+        
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

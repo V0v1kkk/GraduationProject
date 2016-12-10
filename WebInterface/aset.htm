@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Система сбора информации о качестве воздуха</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <style type="text/css">
+  body,td,th {
+	font-family: "trebuchet ms", arial, sans-serif;
+	font-size: 0.8em;
+}
+  </style>
+  <script>
+var xmlHttp=createXmlHttpObject();
+var xmlHttpSettings=createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xmlHttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	return xmlHttp;
+}
+
+function start()
+{
+	if(xmlHttpSettings.readyState==0 || xmlHttpSettings.readyState==4)
+	{
+		xmlHttpSettings.open('GET','alarmsettings',true);
+		xmlHttpSettings.onreadystatechange=handleAlarmSettingsServerResponse;
+		xmlHttpSettings.send(null);
+	}
+	process();
+}
+
+function process()
+{
+	if(xmlHttp.readyState==0 || xmlHttp.readyState==4)
+	{
+		xmlHttp.open('GET','stats',true);
+		xmlHttp.onreadystatechange=handleServerResponse;
+		xmlHttp.send(null);
+	}
+	setTimeout('process()',5000);
+}
+
+function handleAlarmSettingsServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('AlarmState');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==1)
+		{
+			document.getElementById('AlarmOn').setAttribute('checked', 'checked');
+		}
+		if(message==0)
+		{
+			document.getElementById('AlarmOn').removeAttribute('checked');
+		}
+		
+		xmldoc = xmlResponse.getElementsByTagName('CheckErrorState');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==1)
+		{
+			document.getElementById('IntervalCheckOn').setAttribute('checked', 'checked');
+		}
+		if(message==0)
+		{
+			document.getElementById('IntervalCheckOn').removeAttribute('checked');
+		}		
+		///
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureGreenZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempGU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureGreenZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempGD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureYellowZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempYU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureYellowZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempYD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureRedZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempRU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('TemperatureRedZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('TempRD').value=message;
+		///
+		xmldoc = xmlResponse.getElementsByTagName('HumidityGreenZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumGU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('HumidityGreenZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumGD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('HumidityYellowZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumYU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('HumidityYellowZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumYD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('HumidityRedZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumRU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('HumidityRedZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('HumRD').value=message;
+		///
+		xmldoc = xmlResponse.getElementsByTagName('CO2GreenZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2GU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CO2GreenZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2GD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CO2YellowZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2YU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CO2YellowZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2YD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CO2RedZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2RU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CO2RedZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CO2RD').value=message;
+		///
+		xmldoc = xmlResponse.getElementsByTagName('COGreenZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('COGU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('COGreenZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('COGD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('COYellowZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('COYU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('COYellowZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('COYD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CORedZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CORU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('CORedZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('CORD').value=message;
+		///
+		xmldoc = xmlResponse.getElementsByTagName('DustGreenZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustGU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('DustGreenZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustGD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('DustYellowZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustYU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('DustYellowZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustYD').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('DustRedZoneUP');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustRU').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('DustRedZoneDown');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('DustRD').value=message;
+	}
+}
+
+function handleServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('uptime');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('Uptime').innerHTML=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTConnectionStatus');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет соединения
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Не установлено";
+		}
+		if(message==1) //Есть соединение
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Установлено";
+		}
+	}
+}
+
+function savesettings()
+{
+	server="";
+	if(document.getElementById('AlarmOn').checked)
+	{	
+		server += "/setalarmsettings?AlarmState=1";
+	}
+	else
+	{	
+		server += "/setalarmsettings?AlarmState=0";
+	}
+	
+	if(document.getElementById('IntervalCheckOn').checked)
+	{	
+		server += "&CheckErrorState=1";
+	}
+	else
+	{	
+		server += "&CheckErrorState=0";
+	}
+	
+	server += "&TGZUP=" + document.getElementById('TempGU').value;
+	server += "&TGZDown=" + document.getElementById('TempGD').value;
+	server += "&TYZUP=" + document.getElementById('TempYU').value;
+	server += "&TYZDown=" + document.getElementById('TempYD').value;
+	server += "&TRZUP=" + document.getElementById('TempRU').value;
+	server += "&TRZDown=" + document.getElementById('TempRD').value;
+
+	server += "&HGZUP=" + document.getElementById('HumGU').value;
+	server += "&HGZDown=" + document.getElementById('HumGD').value;
+	server += "&HYZUP=" + document.getElementById('HumYU').value;
+	server += "&HYZDown=" + document.getElementById('HumYD').value;
+	server += "&HRZUP=" + document.getElementById('HumRU').value;
+	server += "&HRZDown=" + document.getElementById('HumRD').value;
+	
+	server += "&CO2GZUP=" + document.getElementById('CO2GU').value;
+	server += "&CO2GZDown=" + document.getElementById('CO2GD').value;
+	server += "&CO2YZUP=" + document.getElementById('CO2YU').value;
+	server += "&CO2YZDown=" + document.getElementById('CO2YD').value;
+	server += "&CO2RZUP=" + document.getElementById('CO2RU').value;
+	server += "&CO2RZDown=" + document.getElementById('CO2RD').value;
+	
+	server += "&COGZUP=" + document.getElementById('COGU').value;
+	server += "&COGZDown=" + document.getElementById('COGD').value;
+	server += "&COYZUP=" + document.getElementById('COYU').value;
+	server += "&COYZDown=" + document.getElementById('COYD').value;
+	server += "&CORZUP=" + document.getElementById('CORU').value;
+	server += "&CORZDown=" + document.getElementById('CORD').value;
+	
+	server += "&DGZUP=" + document.getElementById('DustGU').value;
+	server += "&DGZDown=" + document.getElementById('DustGD').value;
+	server += "&DYZUP=" + document.getElementById('DustYU').value;
+	server += "&DYZDown=" + document.getElementById('DustYD').value;
+	server += "&DRZUP=" + document.getElementById('DustRU').value;
+	server += "&DRZDown=" + document.getElementById('DustRD').value;
+
+
+	request = new XMLHttpRequest();
+	request.open("PUT", server, true);
+	request.send();
+}
+
+  </script>
+  
+</head>
+
+<body onload="start();">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <h1><a href="index.htm">AirQuality<span class="logo_colour">Monitoring</span></a></h1>
+          <h2>Система сбора информации о качестве воздуха</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="index.htm">Главная</a></li>
+          <li><a href="nset.htm">Настройки сети</a></li>
+          <li><a href="mqttset.htm">Настройки MQTT</a></li>
+          <li class="selected"><a href="aset.htm">Настройки оповещений</a></li>
+          <li><a href="about.htm">Служебное</a></li>
+        </ul>
+      </div>
+    </div>
+<div id="site_content">
+  <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Время работы</h3>
+            <p id="Uptime">0:00</p>
+            <h3>Соединение с MQTT</h3>
+            <p id="MQTTStatus"></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+</div>
+      <div id="content">
+        <h1>Настройки звковых оповещений</h1>
+
+        <div class="form_settings">
+        <input type="checkbox" class="checkbox" id="AlarmOn"/>
+		<label for="AlarmOn">Включить звуковые оповещения</label>
+        <br><br>
+        <input type="checkbox" class="checkbox" id="IntervalCheckOn"/>
+		<label for="IntervalCheckOn">Включить проверку данных</label>
+        <br><br>
+        <h4>Температура</h4>
+        <p><span>Верхняя граница зелёной зоны</span><input type="text" name="h" id="TempGU" value="" size="10"> &deg;С</p>
+        <p><span>Нижняя граница зелёной зоны</span><input type="text" name="h" id="TempGD" value="" size="10"> &deg;С</p>
+        <p><span>Верхняя граница желтой зоны</span><input type="text" name="h" id="TempYU" value="" size="10"> &deg;С</p>
+        <p><span>Нижняя граница желтой зоны</span><input type="text" name="h" id="TempYD" value="" size="10"> &deg;С</p>
+        <p><span>Верхняя граница красной зоны</span><input type="text" name="h" id="TempRU" value="" size="10"> &deg;С</p>
+        <p><span>Нижняя граница красной зоны</span><input type="text" name="h" id="TempRD" value="" size="10"> &deg;С</p>
+        
+        <h4>Влажность</h4>
+        <p><span>Верхняя граница зелёной зоны</span><input type="text" name="h" id="HumGU" value="" size="10"> %</p>
+        <p><span>Нижняя граница зелёной зоны</span><input type="text" name="h" id="HumGD" value="" size="10"> %</p>
+        <p><span>Верхняя граница желтой зоны</span><input type="text" name="h" id="HumYU" value="" size="10"> %</p>
+        <p><span>Нижняя граница желтой зоны</span><input type="text" name="h" id="HumYD" value="" size="10"> %</p>
+        <p><span>Верхняя граница красной зоны</span><input type="text" name="h" id="HumRU" value="" size="10"> %</p>
+        <p><span>Нижняя граница красной зоны</span><input type="text" name="h" id="HumRD" value="" size="10"> %</p>
+        
+        <h4>CO2</h4>
+        <p><span>Верхняя граница зелёной зоны</span><input type="text" name="h" id="CO2GU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница зелёной зоны</span><input type="text" name="h" id="CO2GD" value="" size="10"> ppm</p>
+        <p><span>Верхняя граница желтой зоны</span><input type="text" name="h" id="CO2YU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница желтой зоны</span><input type="text" name="h" id="CO2YD" value="" size="10"> ppm</p>
+        <p><span>Верхняя граница красной зоны</span><input type="text" name="h" id="CO2RU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница красной зоны</span><input type="text" name="h" id="CO2RD" value="" size="10"> ppm</p>
+        
+        <h4>CO</h4>
+        <p><span>Верхняя граница зелёной зоны</span><input type="text" name="h" id="COGU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница зелёной зоны</span><input type="text" name="h" id="COGD" value="" size="10"> ppm</p>
+        <p><span>Верхняя граница желтой зоны</span><input type="text" name="h" id="COYU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница желтой зоны</span><input type="text" name="h" id="COYD" value="" size="10"> ppm</p>
+        <p><span>Верхняя граница красной зоны</span><input type="text" name="h" id="CORU" value="" size="10"> ppm</p>
+        <p><span>Нижняя граница красной зоны</span><input type="text" name="h" id="CORD" value="" size="10"> ppm</p>
+        
+        <h4>Взвешенные частицы</h4>
+        <p><span>Верхняя граница зелёной зоны</span><input type="text" name="h" id="DustGU" value="" size="10"> мг/м<sup>3</sup></p>
+        <p><span>Нижняя граница зелёной зоны</span><input type="text" name="h" id="DustGD" value="" size="10"> мг/м<sup>3</sup></p>
+        <p><span>Верхняя граница желтой зоны</span><input type="text" name="h" id="DustYU" value="" size="10"> мг/м<sup>3</sup></p>
+        <p><span>Нижняя граница желтой зоны</span><input type="text" name="h" id="DustYD" value="" size="10"> мг/м<sup>3</sup></p>
+        <p><span>Верхняя граница красной зоны</span><input type="text" name="h" id="DustRU" value="" size="10"> мг/м<sup>3</sup></p>
+        <p><span>Нижняя граница красной зоны</span><input type="text" name="h" id="DustRD" value="" size="10"> мг/м<sup>3</sup></p>
+        <br><br>
+        <input class="submit" type="submit" name="state" value="Сохранить настройки" onclick="savesettings();">  
+      </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Система сбора информации о качестве воздуха</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <style type="text/css">
+  body,td,th {
+	font-family: "trebuchet ms", arial, sans-serif;
+	font-size: 0.8em;
+}
+  </style>
+  <script>
+var xmlHttp=createXmlHttpObject();
+var xmlHttpSettings=createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xmlHttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	return xmlHttp;
+}
+
+function start()
+{
+	if(xmlHttpSettings.readyState==0 || xmlHttpSettings.readyState==4)
+	{
+		xmlHttpSettings.open('GET','mqttsettings',true);
+		xmlHttpSettings.onreadystatechange=handleMQTTSettingsServerResponse;
+		xmlHttpSettings.send(null);
+	}
+	process();
+}
+
+function process()
+{
+	if(xmlHttp.readyState==0 || xmlHttp.readyState==4)
+	{
+		xmlHttp.open('GET','stats',true);
+		xmlHttp.onreadystatechange=handleServerResponse;
+		xmlHttp.send(null);
+	}
+	setTimeout('process()',5000);
+}
+
+function handleMQTTSettingsServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+
+		xmldoc = xmlResponse.getElementsByTagName('MQTTServer');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('MQTTServer').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTPort');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('MQTTPort').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTLogin');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('MQTTLogin').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTPassword');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('MQTTPassword').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTDisabled');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==1)
+		{
+			document.getElementById('checkbox').setAttribute('checked', 'checked');
+			
+			document.getElementById('MQTTServer').disabled = true;
+			document.getElementById('MQTTPort').disabled = true;
+			document.getElementById('MQTTLogin').disabled = true;
+			document.getElementById('MQTTPassword').disabled = true;
+		}
+		if(message==0)
+		{
+			document.getElementById('checkbox').removeAttribute('checked');
+			
+			document.getElementById('MQTTServer').disabled = false;
+			document.getElementById('MQTTPort').disabled = false;
+			document.getElementById('MQTTLogin').disabled = false;
+			document.getElementById('MQTTPassword').disabled = false;
+		}
+	}
+}
+
+function handleServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('uptime');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('Uptime').innerHTML=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTConnectionStatus');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет соединения
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Не установлено";
+		}
+		if(message==1) //Есть соединение
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Установлено";
+		}
+	}
+}
+
+function savesettings()
+{
+	if(document.getElementById('checkbox').checked)
+	{
+		mqttdisable=1;
+		
+		server = "/setmqttsettings?disable="+mqttdisable;
+	}
+	else
+	{
+		mqttdisable=0;
+		
+		server = "/setmqttsettings?disable="+mqttdisable;
+		server += "&server=" + document.getElementById('MQTTServer').value;
+		server += "&port=" + document.getElementById('MQTTPort').value;
+		server += "&login=" + document.getElementById('MQTTLogin').value;
+		server += "&password=" + document.getElementById('MQTTPassword').value;
+	}
+	
+	request = new XMLHttpRequest();
+	request.open("PUT", server, true);
+	request.send();
+}
+
+function CheckCheckBox()
+{
+	if(document.getElementById('checkbox').checked==1)
+	{
+		document.getElementById('MQTTServer').disabled = true;
+		document.getElementById('MQTTPort').disabled = true;
+		document.getElementById('MQTTLogin').disabled = true;
+		document.getElementById('MQTTPassword').disabled = true;
+	}
+	else
+	{
+		document.getElementById('MQTTServer').disabled = false;
+		document.getElementById('MQTTPort').disabled = false;
+		document.getElementById('MQTTLogin').disabled = false;
+		document.getElementById('MQTTPassword').disabled = false;
+	}
+}
+  </script>
+  
+</head>
+
+<body onload="start();">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <h1><a href="index.htm">AirQuality<span class="logo_colour">Monitoring</span></a></h1>
+          <h2>Система сбора информации о качестве воздуха</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="index.htm">Главная</a></li>
+          <li><a href="nset.htm">Настройки сети</a></li>
+          <li class="selected"><a href="mqttset.htm">Настройки MQTT</a></li>
+          <li><a href="aset.htm">Настройки оповещений</a></li>
+          <li><a href="about.htm">Служебное</a></li>
+        </ul>
+      </div>
+    </div>
+<div id="site_content">
+  <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Время работы</h3>
+            <p id="Uptime">0:00</p>
+            <h3>Соединение с MQTT</h3>
+            <p id="MQTTStatus"></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+</div>
+      <div id="content">
+        <h1>Настройки MQTT</h1>
+
+        <div class="form_settings">
+        <input type="checkbox" class="checkbox" id="checkbox" onChange="CheckCheckBox();"/>
+		<label for="checkbox">Выключить передачу данных на MQTT-брокер</label>
+        <br><br>
+        <p><span>MQTT-сервер</span><input type="text" name="h" id="MQTTServer" value="" size="15"></p>
+        <p><span>Порт</span><input type="text" name="h" id="MQTTPort" value="" size="15"></p>
+        <p><span>Логин</span><input type="text" name="h" id="MQTTLogin" value="" size="15"></p>
+        <p><span>Пароль</span><input type="text" name="h" id="MQTTPassword" value="" size="15"></p>
+        <br><br>
+        <input class="submit" type="submit" name="state" value="Сохранить настройки" onclick="savesettings();">  
+      </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

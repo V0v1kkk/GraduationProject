@@ -1,0 +1,180 @@
+Data Expoted from: C:/Users/Владимир/Documents/eagle/Diplom/listRamka.sch
+with: C:/EAGLE-7.5.0/ulp/statistic-sch.ulp
+at: 26.05.2016 16:38
+EAGLE Version 7.5.0 Copyright (c) 1988-2015 CadSoft
+
+used layers 6
+
+91 Nets
+93 Pins
+94 Symbols
+95 Names
+96 Values
+97 Info
+_________________________
+
+
+
+
+============================
+
+----------------------------
+LAYER
+Nb.	Name	Used
+ 90	Modules	0
+ 91	Nets	1
+ 92	Busses	0
+ 93	Pins	1
+ 94	Symbols	1
+ 95	Names	1
+ 96	Values	1
+ 97	Info	1
+ 98	Guide	0
+ 99	SpiceOrder	0
+100	DocFrame	1
+101	NotChangedData	1
+102	ChangedData	1
+103	tMap	0
+104	Name	0
+105	tPlate	0
+106	bPlate	0
+107	Crop	0
+108	tplace-old	0
+109	ref-old	0
+110	fp0	0
+111	LPC17xx	0
+112	tSilk	0
+113	IDFDebug	0
+114	Badge_Outline	0
+115	ReferenceISLANDS	0
+116	Patch_BOT	0
+118	Rect_Pads	0
+121	_tsilk	0
+122	_bsilk	0
+123	tTestmark	0
+124	bTestmark	0
+125	_tNames	0
+126	_bNames	0
+127	_tValues	0
+128	_bValues	0
+129	Mask	0
+131	tAdjust	0
+132	bAdjust	0
+144	Drill_legend	0
+150	Notes	0
+151	HeatSink	0
+152	_bDocu	0
+153	FabDoc1	0
+154	FabDoc2	0
+155	FabDoc3	0
+199	Contour	0
+200	200bmp	0
+201	201bmp	0
+202	202bmp	0
+203	203bmp	0
+204	204bmp	0
+205	205bmp	0
+206	206bmp	0
+207	207bmp	0
+208	208bmp	0
+209	209bmp	0
+210	210bmp	0
+211	211bmp	0
+212	212bmp	0
+213	213bmp	0
+214	214bmp	0
+215	215bmp	0
+216	216bmp	0
+217	217bmp	0
+218	218bmp	0
+219	219bmp	0
+220	220bmp	0
+221	221bmp	0
+222	222bmp	0
+223	223bmp	0
+224	224bmp	0
+225	225bmp	0
+226	226bmp	0
+227	227bmp	0
+228	228bmp	0
+229	229bmp	0
+230	230bmp	0
+231	231bmp	0
+232	Eagle3D_PG2	0
+233	Eagle3D_PG3	0
+248	Housing	0
+249	Edge	0
+250	Descript	0
+251	SMDround	0
+254	cooling	0
+255	routoute	0
+
+----------------------------
+CLASS
+# - Name	min. Width	Clearance	min. Drill	Used
+0 - default	0.0000 	0.0000 	0.0000 	45  
+
+
+----------------------------
+LIBRARY	Quant.
+supply1	41  
+SparkFun-Capacitors	8   
+esp8266modules	1   
+diplom	7   
+SparkFun-Connectors	3   
+crystal	1   
+rcl	17  
+switch-tact	2   
+switch-dil	3   
+SparkFun-PowerIC	1   
+DFPlayer_v1	1   
+SparkFun-DigitalIC	1   
+GeekAmmo	5   
+
+PACKAGE	Quant.
+CAP-PTH-SMALL-KIT	5   
+CPOL-RADIAL-10UF-25V-KIT	3   
+ESP12E-SMD	1   
+FC-22	1   
+1X06	1   
+1X04	4   
+1X02	2   
+HC33U-V	1   
+0207/10	17  
+DTS-3	2   
+DS-01	2   
+DS-02	1   
+SD	1   
+78XXL	1   
+DFPLAYER	1   
+DIL28-3	1   
+SOT23-3	5   
+Z07-CO	1   
+
+DEVICE	Quant.
+0.1UF-50V-20%(PTH)KIT-EZ	5   
+10UF-25V-20%(PTH)KIT	3   
+ESP12ESMD	1   
+FC-22FC-22-STANDART	1   
+GP2Y1010AU0FGP2Y1010AU0F	1   
+M04PTH	2   
+M02PTH	1   
+MH-Z14	1   
+NEXTION	1   
+CRYSTALHC33U-V	1   
+R-EU_0207/10	17  
+DTS-3	2   
+DS01	2   
+DS02	1   
+SDCARDSDSTAY	1   
+SPEAKER	1   
+V_REG_LD1117VXX	1   
+DFPLAYER	1   
+ATMEGA328P_PDIP	1   
+N-CHANNEL-MOSFET-BSS138	5   
+ZE07-CO	1   
+
+
+----------------------------
+
+End report

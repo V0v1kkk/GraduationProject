@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Система сбора информации о качестве воздуха</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <style type="text/css">
+  body,td,th {
+	font-family: "trebuchet ms", arial, sans-serif;
+	font-size: 0.8em;
+}
+  </style>
+  <script>
+var xmlHttp=createXmlHttpObject();
+var xmlHttpSettings=createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xmlHttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	return xmlHttp;
+}
+
+function start()
+{
+	if(xmlHttpSettings.readyState==0 || xmlHttpSettings.readyState==4)
+	{
+		xmlHttpSettings.open('GET','networksettings',true);
+		xmlHttpSettings.onreadystatechange=handleNetworkSettingsServerResponse;
+		xmlHttpSettings.send(null);
+	}
+	process();
+}
+
+function process()
+{
+	if(xmlHttp.readyState==0 || xmlHttp.readyState==4)
+	{
+		xmlHttp.open('GET','stats',true);
+		xmlHttp.onreadystatechange=handleServerResponse;
+		xmlHttp.send(null);
+	}
+	setTimeout('process()',5000);
+}
+
+function handleNetworkSettingsServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+
+		xmldoc = xmlResponse.getElementsByTagName('SSID');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('SSID').value=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('WifiPass');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('WifiPassword').value=message;
+	}
+}
+
+function handleServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('uptime');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('Uptime').innerHTML=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTConnectionStatus');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет соединения
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Не установлено";
+		}
+		if(message==1) //Есть соединение
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Установлено";
+		}
+	}
+}
+
+function savesettings()
+{
+	server = "/setnetworksettings?SSID="+ document.getElementById('SSID').value;
+	server += "&WifiPass=" + document.getElementById('WifiPassword').value;
+	
+	request = new XMLHttpRequest();
+	request.open("PUT", server, true);
+	request.send();
+}
+
+function CheckCheckBox()
+{
+	if(document.getElementById('checkbox').checked==1)
+	{
+		document.getElementById('MQTTSetver').disabled = true;
+		document.getElementById('MQTTPort').disabled = true;
+		document.getElementById('MQTTLogin').disabled = true;
+		document.getElementById('MQTTPassword').disabled = true;
+	}
+	else
+	{
+		document.getElementById('MQTTSetver').disabled = false;
+		document.getElementById('MQTTPort').disabled = false;
+		document.getElementById('MQTTLogin').disabled = false;
+		document.getElementById('MQTTPassword').disabled = false;
+	}
+}
+  </script>
+  
+</head>
+
+<body onload="start();">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <h1><a href="index.htm">AirQuality<span class="logo_colour">Monitoring</span></a></h1>
+          <h2>Система сбора информации о качестве воздуха</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="index.htm">Главная</a></li>
+          <li class="selected"><a href="nset.htm">Настройки сети</a></li>
+          <li><a href="mqttset.htm">Настройки MQTT</a></li>
+          <li><a href="aset.htm">Настройки оповещений</a></li>
+          <li><a href="about.htm">Служебное</a></li>
+        </ul>
+      </div>
+    </div>
+<div id="site_content">
+  <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Время работы</h3>
+            <p id="Uptime">0:00</p>
+            <h3>Соединение с MQTT</h3>
+            <p id="MQTTStatus"></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+</div>
+      <div id="content">
+        <h1>Изменение настроек подключения к wi-fi сети</h1>
+
+        <div class="form_settings">
+        <p><span>SSID</span><input type="text" name="h" id="SSID" value="" size="15"></p>
+        <p><span>Пароль</span><input type="text" name="h" id="WifiPassword" value="" size="15"></p>
+        
+
+        <br><br>
+        <input class="submit" type="submit" name="state" value="Сохранить настройки" onclick="savesettings();"> 
+           
+         </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

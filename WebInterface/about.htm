@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>Система сбора информации о качестве воздуха</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <style type="text/css">
+  body,td,th {
+	font-family: "trebuchet ms", arial, sans-serif;
+	font-size: 0.8em;
+}
+  </style>
+  <script>
+var xmlHttp=createXmlHttpObject();
+
+function createXmlHttpObject()
+{
+	if(window.XMLHttpRequest)
+	{
+		xmlHttp=new XMLHttpRequest();
+	}
+	else
+	{
+		xmlHttp=new ActiveXObject('Microsoft.XMLHTTP');
+	}
+	return xmlHttp;
+}
+
+function process()
+{
+	if(xmlHttp.readyState==0 || xmlHttp.readyState==4)
+	{
+		xmlHttp.open('GET','xml',true);
+		xmlHttp.onreadystatechange=handleServerResponse;
+		xmlHttp.send(null);
+	}
+	setTimeout('process()',5000);
+}
+
+function handleServerResponse()
+{
+	if(xmlHttp.readyState==4 && xmlHttp.status==200)
+	{
+		xmlResponse=xmlHttp.responseXML;
+		
+		xmldoc = xmlResponse.getElementsByTagName('uptime');
+		message = xmldoc[0].firstChild.nodeValue;
+		document.getElementById('Uptime').innerHTML=message;
+		
+		xmldoc = xmlResponse.getElementsByTagName('MQTTConnectionStatus');
+		message = xmldoc[0].firstChild.nodeValue;
+		if(message==0) //Нет соединения
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Не установлено";
+		}
+		if(message==1) //Есть соединение
+		{
+			document.getElementById('MQTTStatus').innerHTML = "Установлено";
+		}
+	}
+}
+
+function sendReset()
+{
+	request = new XMLHttpRequest();
+	request.open("PUT", "/reset", true);
+	request.send();
+}
+  </script>
+  
+</head>
+
+<body onload="process();">
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <h1><a href="index.htm">AirQuality<span class="logo_colour">Monitoring</span></a></h1>
+          <h2>Система сбора информации о качестве воздуха</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <li><a href="index.htm">Главная</a></li>
+          <li><a href="nset.htm">Настройки сети</a></li>
+          <li><a href="mqttset.htm">Настройки MQTT</a></li>
+          <li><a href="aset.htm">Настройки оповещений</a></li>
+          <li class="selected"><a href="about.htm">Служебное</a></li>
+        </ul>
+      </div>
+    </div>
+<div id="site_content">
+  <div id="sidebar_container">
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Время работы</h3>
+            <p id="Uptime">0:00</p>
+            <h3>Соединение с MQTT</h3>
+            <p id="MQTTStatus"></p>
+          </div>
+          <div class="sidebar_base"></div>
+        </div>
+		</div>
+      <div id="content">
+        <h1>Обновление прошивки</h1>
+        <p>Внимание! Не пытайтесь обновлять прошивку если не знаете, что делаете!</p>
+        <form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Обновить'></form>
+        
+        <br>
+        <h1>Загрузка файлов</h1>
+        <p> <a href="edit">Загрузка файлов на SD-карту</a></p>
+        
+        <br>
+        <h1>Перезагрузка</h1>
+        <p><input type='submit' value='Перезагрузить устройство' onClick="sendReset();"></p>
+        
+        <h1>Связь с разработчиком</h1>
+		<p>Все вопросы касательно данного устройства вы можете задать по адресу <a href="mailto:vladimirrogozhin90@gmail.com">vladimirrogozhin90@gmail.com</a></p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
