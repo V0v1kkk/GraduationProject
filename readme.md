@@ -15,7 +15,7 @@
 * Написано руководство пользователя. 
 * Построен прототип устройства.
 
-## [Текст](Text/Диплом.pdf)
+## [Пояснительная записка](Text/Диплом.pdf)
 
 ## Видео
 [![Прототип в работе](https://img.youtube.com/vi/i2k4qLWkXlE/0.jpg)](https://www.youtube.com/watch?v=i2k4qLWkXlE)
